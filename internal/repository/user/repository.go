@@ -12,13 +12,12 @@ import (
 	"github.com/jackc/pgx/v4/pgxpool"
 )
 
-
 const (
-	tableName = "auth"
-	idColumn = "id"
-	nameColumn = "name"
-	emailColumn = "email"
-	passwordColumn = "password"
+	tableName       = "auth"
+	idColumn        = "id"
+	nameColumn      = "name"
+	emailColumn     = "email"
+	passwordColumn  = "password"
 	createdAtColumn = "created_at"
 	updatedAtColumn = "updated_at"
 )
@@ -67,10 +66,10 @@ func (r *repo) Get(ctx context.Context, id int64) (*model.User, error) {
 
 	var user modelRepo.User
 	err = r.db.QueryRow(ctx, query, args...).Scan(
-		&user.ID, 
-		&user.Info.Name, 
-		&user.Info.Email, 
-		// &user.Info.Role, 
+		&user.ID,
+		&user.Info.Name,
+		&user.Info.Email,
+		// &user.Info.Role,
 		// &user.CreatedAt,
 		// &user.UpdatedAt,
 	)

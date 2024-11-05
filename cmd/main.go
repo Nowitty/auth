@@ -1,18 +1,18 @@
 package main
 
 import (
+	userApi "auth/internal/api/user"
 	userRepository "auth/internal/repository/user"
 	userService "auth/internal/service/user"
-	userApi "auth/internal/api/user"
 	desc "auth/pkg/user_v1"
 	"context"
 	"fmt"
 	"log"
 	"net"
 
+	"github.com/jackc/pgx/v4/pgxpool"
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/reflection"
-	"github.com/jackc/pgx/v4/pgxpool"
 )
 
 const grpcPort = 50051

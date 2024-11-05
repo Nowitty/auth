@@ -15,11 +15,10 @@ func ToUserFromRepo(user *modelRepo.User) *model.User {
 	}
 }
 
-func ToUserInfoFromRepo(info modelRepo.UserInfo) model.UserInfo{
+func ToUserInfoFromRepo(info modelRepo.UserInfo) model.UserInfo {
 	return model.UserInfo{
 		Name:  info.Name,
 		Email: info.Email,
 		Role:  model.Role(info.Role),
 	}
 }
-

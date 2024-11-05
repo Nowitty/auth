@@ -7,6 +7,7 @@ import (
 	desc "auth/pkg/user_v1"
 )
 
+// Convert from service to proto
 func ToUserFromService(user *model.User) *desc.User {
 	var updatedAt *timestamppb.Timestamp
 	if user.UpdatedAt.Valid {
@@ -21,18 +22,19 @@ func ToUserFromService(user *model.User) *desc.User {
 	}
 }
 
+// Convert from service to proto
 func ToUserInfoFromService(info model.UserInfo) *desc.UserInfo {
 	return &desc.UserInfo{
-		Name:   info.Name,
+		Name:  info.Name,
 		Email: info.Email,
-		Role: desc.Role(info.Role),
+		Role:  desc.Role(info.Role),
 	}
 }
 
 func ToUserInfoFromDesc(info *desc.UserInfo) *model.UserInfo {
 	return &model.UserInfo{
-		Name:   info.Name,
+		Name:  info.Name,
 		Email: info.Email,
-		Role: model.Role(info.Role),
+		Role:  model.Role(info.Role),
 	}
 }

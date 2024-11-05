@@ -6,7 +6,6 @@ import (
 )
 
 type Role int
-
 type User struct {
 	ID        int64
 	Info      UserInfo
@@ -15,7 +14,7 @@ type User struct {
 }
 
 type UserInfo struct {
-	Name   string
-	Email  string
-	Role   Role
+	Name  string
+	Email string
+	Role  Role
 }
