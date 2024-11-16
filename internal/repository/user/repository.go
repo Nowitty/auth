@@ -1,6 +1,7 @@
 package user
 
 import (
+	"auth/internal/client/db"
 	"auth/internal/model"
 	"auth/internal/repository"
 	"auth/internal/repository/user/converter"
@@ -9,7 +10,6 @@ import (
 	"log"
 
 	sq "github.com/Masterminds/squirrel"
-	"github.com/jackc/pgx/v4/pgxpool"
 )
 
 const (
@@ -23,11 +23,11 @@ const (
 )
 
 type repo struct {
-	db *pgxpool.Pool
+	dbClient db.Client
 }
 
-func NewRepository(db *pgxpool.Pool) repository.UserRepository {
-	return &repo{db: db}
+func NewRepository(db db.Client) repository.UserRepository {
+	return &repo{dbClient: db}
 }
 
 func (r *repo) Create(ctx context.Context, info *model.UserInfo) (int64, error) {
@@ -43,8 +43,13 @@ func (r *repo) Create(ctx context.Context, info *model.UserInfo) (int64, error) 
 	}
 
 	var id int64
+	
+	q := db.Query{
+		Name: "Create",
+		QueryRaw: query,
+	}
 
-	err = r.db.QueryRow(ctx, query, args...).Scan(&id)
+	err = r.dbClient.DB().QueryRowContext(ctx, q, args...).Scan(&id)
 	if err != nil {
 		log.Fatalf("failed to scan auth id: %v", err)
 	}
@@ -64,15 +69,13 @@ func (r *repo) Get(ctx context.Context, id int64) (*model.User, error) {
 		return nil, err
 	}
 
+	q := db.Query{
+		Name: "Create",
+		QueryRaw: query,
+	}
+
 	var user modelRepo.User
-	err = r.db.QueryRow(ctx, query, args...).Scan(
-		&user.ID,
-		&user.Info.Name,
-		&user.Info.Email,
-		// &user.Info.Role,
-		// &user.CreatedAt,
-		// &user.UpdatedAt,
-	)
+	err = r.dbClient.DB().ScanOneContext(ctx, &user, q, args...)
 
 	if err != nil {
 		return nil, err

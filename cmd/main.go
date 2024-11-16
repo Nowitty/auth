@@ -1,50 +1,21 @@
 package main
 
 import (
-	userApi "auth/internal/api/user"
-	userRepository "auth/internal/repository/user"
-	userService "auth/internal/service/user"
-	desc "auth/pkg/user_v1"
+	"auth/internal/app"
 	"context"
-	"fmt"
 	"log"
-	"net"
-
-	"github.com/jackc/pgx/v4/pgxpool"
-	"google.golang.org/grpc"
-	"google.golang.org/grpc/reflection"
-)
-
-const grpcPort = 50051
-
-const (
-	dbDSN = "host=localhost port=54321 dbname=auth user=auth-user password=auth-password sslmode=disable"
 )
 
 func main() {
 	ctx := context.Background()
 
-	lis, err := net.Listen("tcp", fmt.Sprintf(":%d", grpcPort))
+	a, err := app.NewApp(ctx)
 	if err != nil {
-		log.Fatalf("failed to listen: %v", err)
+		log.Fatalf("failed to init app")
 	}
 
-	pool, err := pgxpool.Connect(ctx, dbDSN)
+	err = a.Run()
 	if err != nil {
-		log.Fatalf("failed to connect to database: %v", err)
-	}
-	defer pool.Close()
-
-	userRepo := userRepository.NewRepository(pool)
-	userSrv := userService.NewService(userRepo)
-
-	s := grpc.NewServer()
-	reflection.Register(s)
-	desc.RegisterUserV1Server(s, userApi.NewImplementation(userSrv))
-
-	log.Printf("Listening")
-
-	if err = s.Serve(lis); err != nil {
-		log.Fatalf("falied to serve")
+		log.Fatalf("failed to run app")
 	}
 }
